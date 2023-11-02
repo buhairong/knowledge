@@ -1,19 +1,21 @@
 export interface menu {
-  menuId: number,
+  id: number,
   menuName: string,
   icon: string,
+  route: string,
+  component: string,
   parentId?: number,
   children: menu[],
 }
 
 export interface role {
-  roleId: number,
+  id: number,
   roleName: string,
   menus: menu[],
 }
 
 export interface user {
-  userId: number,
+  id: number,
   username: string,
   password: string,
   openid: string,
