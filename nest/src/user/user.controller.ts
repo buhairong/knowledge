@@ -1,23 +1,47 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { ConfigService } from '@nestjs/config';
-import { ConfigEnum } from 'src/enum/config.enum';
+import { User } from './user.entity';
+import { getUserDto } from './dto/get-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private userService: UserService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private userService: UserService) {}
+
+  @Get('/:id')
+  getUser(): any {
+    return 'getUser';
+  }
 
   @Get()
-  getUsers(): any {
-    console.log(this.configService.get(ConfigEnum.DB_PORT));
-    return this.userService.getUsers();
+  getUsers(@Query() query: getUserDto): any {
+    return this.userService.findAll(query);
   }
 
   @Post()
-  addUser(): any {
-    return this.userService.addUser();
+  addUser(@Body() dto: any): any {
+    const user: Partial<User> = dto;
+
+    return this.userService.create(user);
+  }
+
+  @Patch('/:id')
+  updateUser(@Body() dto: any, @Param() id: number): any {
+    const user: Partial<User> = dto;
+
+    return this.userService.update(id, user);
+  }
+
+  @Delete('/:id')
+  deleteUser(@Param() id: number): any {
+    return this.userService.remove(id);
   }
 }
