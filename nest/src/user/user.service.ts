@@ -6,6 +6,7 @@ import { getUserDto } from './dto/get-user.dto';
 import { User } from './user.entity';
 import { getCurrentTime } from 'src/utils/util';
 import { ERR_MSG_STATUS } from 'src/constants';
+import { conditionUtils } from 'src/utils/db.helper';
 
 @Injectable()
 export class UserService {
@@ -18,33 +19,51 @@ export class UserService {
     const { page, limit, username, role } = query;
     const take = limit || 100;
     const skip = ((page || 1) - 1) * take;
-    return this.userRepository.find({
-      select: {
-        id: true,
-        username: true,
-        nickname: true,
-        openid: true,
-        createTime: true,
-        updateTime: true,
-        lastLoginTime: true,
-        roles: true,
-      },
-      relations: {
-        roles: true,
-      },
-      where: {
-        username,
-        roles: {
-          id: role,
-        },
-      },
-      take,
-      skip,
-    });
+
+    // return this.userRepository.find({
+    //   select: {
+    //     id: true,
+    //     username: true,
+    //     nickname: true,
+    //     openid: true,
+    //     createTime: true,
+    //     updateTime: true,
+    //     lastLoginTime: true,
+    //     roles: true,
+    //   },
+    //   relations: {
+    //     roles: true,
+    //   },
+    //   where: {
+    //     username,
+    //     roles: {
+    //       id: role,
+    //     },
+    //   },
+    //   take,
+    //   skip,
+    // });
+
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role');
+
+    const obj = {
+      'user.username': username,
+      'role.id': role,
+    };
+
+    const newQuery = conditionUtils(queryBuilder, obj);
+
+    return newQuery.take(take).skip(skip).getMany();
   }
 
   find(username: string) {
     return this.userRepository.findOne({ where: { username } });
+  }
+
+  findOne(id: number) {
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async create(user: Partial<User>) {
@@ -69,7 +88,9 @@ export class UserService {
     return this.userRepository.update(id, user);
   }
 
-  remove(id: number) {
-    return this.userRepository.delete(id);
+  async remove(id: number) {
+    // return this.userRepository.delete(id);
+    const user = await this.findOne(id);
+    return this.userRepository.remove(user);
   }
 }

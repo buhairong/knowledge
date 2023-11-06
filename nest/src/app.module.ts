@@ -7,6 +7,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigEnum } from './enum/config.enum';
 import { User } from './user/user.entity';
 import { Role } from './role/role.entity';
+import { Log } from './logs/log.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -37,7 +38,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           username: configService.get(ConfigEnum.DB_USERNAME),
           password: configService.get(ConfigEnum.DB_PASSWORD),
           database: configService.get(ConfigEnum.DB_DATABASE),
-          entities: [User, Role],
+          entities: [User, Role, Log],
           synchronize: process.env.NODE_ENV === 'development',
           logging: true,
         } as TypeOrmModuleOptions),
