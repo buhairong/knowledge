@@ -7,7 +7,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigEnum } from './enum/config.enum';
 import { User } from './user/user.entity';
 import { Role } from './role/role.entity';
-import { Log } from './logs/log.entity';
+import { Log } from './log/log.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 

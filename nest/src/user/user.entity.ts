@@ -1,4 +1,4 @@
-import { Log } from 'src/logs/log.entity';
+import { Log } from 'src/log/log.entity';
 import { Role } from 'src/role/role.entity';
 import {
   AfterInsert,
