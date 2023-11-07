@@ -14,6 +14,8 @@ import {
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { getUserDto } from './dto/get-user.dto';
+import { CreateUserPipe } from './pipes/create-user/create-user.pipe';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -30,8 +32,8 @@ export class UserController {
   }
 
   @Post()
-  addUser(@Body() dto: any): any {
-    const user: Partial<User> = dto;
+  addUser(@Body(CreateUserPipe) dto: CreateUserDto): any {
+    const user = dto as User;
 
     return this.userService.create(user);
   }
