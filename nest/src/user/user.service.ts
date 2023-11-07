@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/role/role.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { getUserDto } from './dto/get-user.dto';
 import { User } from './user.entity';
 import { getCurrentTime } from 'src/utils/util';
@@ -67,6 +67,19 @@ export class UserService {
   }
 
   async create(user: Partial<User>) {
+    if (!user.roles) {
+      const role = await this.roleRepository.findOne({ where: { id: 2 } });
+      user.roles = [role];
+    }
+
+    if (user.roles instanceof Array && typeof user.roles[0] === 'number') {
+      user.roles = await this.roleRepository.find({
+        where: {
+          id: In(user.roles),
+        },
+      });
+    }
+
     const time = getCurrentTime();
     user.createTime = time;
     const userTmp = await this.userRepository.create(user);

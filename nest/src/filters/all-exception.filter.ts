@@ -1,9 +1,11 @@
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import * as requestIP from 'request-ip';
@@ -16,14 +18,13 @@ export class AllExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
+    console.log(exception);
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
     const timestamp = getCurrentTime();
     const url = request.url;
-    console.log(url);
-
     const httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -32,10 +33,31 @@ export class AllExceptionFilter implements ExceptionFilter {
     let msg = ERR_MSG_STATUS['other'];
     if (exception instanceof QueryFailedError) {
       if (exception.driverError.errno === 1062) {
-        if (ERR_MSG_STATUS[`${request.url}-${request.method}`]) {
-          msg = ERR_MSG_STATUS[`${request.url}-${request.method}`];
+        for (const key in ERR_MSG_STATUS) {
+          if (request.url.includes(key)) {
+            msg = ERR_MSG_STATUS[key];
+            break;
+          }
         }
       }
+    }
+
+    if (exception instanceof UnauthorizedException) {
+      msg = ERR_MSG_STATUS[401];
+    }
+
+    if (exception instanceof BadRequestException) {
+      let message;
+      if (typeof exception.getResponse() === 'string') {
+        message = exception.getResponse();
+      } else if (typeof exception.getResponse() === 'object') {
+        message = (exception.getResponse() as any).message.join(',');
+      }
+
+      msg = {
+        code: 400,
+        msg: message,
+      };
     }
 
     // const responseBody = {

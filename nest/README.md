@@ -6,3 +6,5 @@ docker-compose up -d
 docker ps
 
 https://typeorm.io/
+
+nest g mo auth

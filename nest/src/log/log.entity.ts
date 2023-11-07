@@ -27,6 +27,9 @@ export class Log {
   @Column()
   ip: string;
 
+  @Column()
+  project: string;
+
   @ManyToOne(() => User, (user) => user.logs)
   @JoinColumn()
   user: User;

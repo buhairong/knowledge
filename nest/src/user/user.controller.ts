@@ -7,6 +7,9 @@ import {
   Patch,
   Post,
   Query,
+  Headers,
+  HttpException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
@@ -34,10 +37,18 @@ export class UserController {
   }
 
   @Patch('/:id')
-  updateUser(@Body() dto: any, @Param() id: number): any {
-    const user: Partial<User> = dto;
+  updateUser(
+    @Body() dto: any,
+    @Param('id') id: number,
+    @Headers('Authorization') headers: any,
+  ): any {
+    if (id === headers) {
+      const user: Partial<User> = dto;
 
-    return this.userService.update(id, user);
+      return this.userService.update(id, user);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 
   @Delete('/:id')

@@ -22,7 +22,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: null })
   nickname: string;
 
   @Column({ default: null })
@@ -43,7 +43,7 @@ export class User {
   @OneToMany(() => Log, (log) => log.user)
   logs: Log[];
 
-  @ManyToMany(() => Role, (role) => role.users)
+  @ManyToMany(() => Role, (role) => role.users, { cascade: ['insert'] })
   @JoinTable({ name: 'users_roles' })
   roles: Role[];
 

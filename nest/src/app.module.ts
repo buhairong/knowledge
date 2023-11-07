@@ -8,6 +8,7 @@ import { ConfigEnum } from './enum/config.enum';
 import { User } from './user/user.entity';
 import { Role } from './role/role.entity';
 import { Log } from './log/log.entity';
+import { AuthModule } from './auth/auth.module';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -44,6 +45,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
         } as TypeOrmModuleOptions),
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
