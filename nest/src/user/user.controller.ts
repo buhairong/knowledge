@@ -10,14 +10,19 @@ import {
   Headers,
   HttpException,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { getUserDto } from './dto/get-user.dto';
 import { CreateUserPipe } from './pipes/create-user/create-user.pipe';
 import { CreateUserDto } from './dto/create-user.dto';
+import { AdminGuard } from 'src/guard/admin.guard';
+import { JwtGuard } from 'src/guard/jwt.guard';
 
 @Controller('user')
+@UseGuards(JwtGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -27,6 +32,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AdminGuard)
   getUsers(@Query() query: getUserDto): any {
     return this.userService.findAll(query);
   }

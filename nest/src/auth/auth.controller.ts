@@ -8,9 +8,12 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signin')
-  signin(@Body() dto: any) {
+  async signin(@Body() dto: any) {
     const { username, password } = dto;
-    return this.authService.signin(username, password);
+    const token = await this.authService.signin(username, password);
+    return {
+      access_token: token,
+    };
   }
 
   @Post('/signup')

@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Catch,
   ExceptionFilter,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   UnauthorizedException,
@@ -42,7 +43,10 @@ export class AllExceptionFilter implements ExceptionFilter {
       }
     }
 
-    if (exception instanceof UnauthorizedException) {
+    if (
+      exception instanceof UnauthorizedException ||
+      exception instanceof ForbiddenException
+    ) {
       msg = ERR_MSG_STATUS[401];
     }
 
