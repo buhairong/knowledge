@@ -1,5 +1,3 @@
-import * as user from './user'
+import { User, Role, Menu, Login } from './user'
 
-export {
-  user,
-}
+export type { User, Role, Menu, Login, }

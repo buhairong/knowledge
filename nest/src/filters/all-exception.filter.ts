@@ -26,7 +26,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const timestamp = getCurrentTime();
     const url = request.url;
-    const httpStatus =
+    let httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -41,6 +41,24 @@ export class AllExceptionFilter implements ExceptionFilter {
           }
         }
       }
+    }
+
+    if (exception instanceof HttpException) {
+      console.log(exception.getResponse());
+      console.log(exception.getStatus());
+      let message;
+      if (typeof exception.getResponse() === 'string') {
+        message = exception.getResponse();
+      } else if (typeof exception.getResponse() === 'object') {
+        message = (exception.getResponse() as any).message.join(',');
+      }
+
+      msg = {
+        code: exception.getStatus(),
+        msg: message,
+      };
+
+      httpStatus = 200;
     }
 
     if (

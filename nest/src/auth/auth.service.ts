@@ -1,8 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { getUserDto } from 'src/user/dto/get-user.dto';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { ERR_MSG_STATUS } from 'src/constants';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -10,15 +17,26 @@ export class AuthService {
 
   async signin(username: string, password: string) {
     const user = await this.userService.find(username);
-
-    if (user && user.password === password) {
-      return this.jwt.signAsync({
-        username: user.username,
-        sub: user.id,
-      });
+    if (!user) {
+      throw new HttpException(
+        ERR_MSG_STATUS[1101].msg,
+        ERR_MSG_STATUS[1101].code,
+      );
     }
 
-    throw new UnauthorizedException();
+    const isPasswordValid = await argon2.verify(user.password, password);
+
+    if (!isPasswordValid) {
+      throw new HttpException(
+        ERR_MSG_STATUS[1101].msg,
+        ERR_MSG_STATUS[1101].code,
+      );
+    }
+
+    return await this.jwt.signAsync({
+      username: user.username,
+      sub: user.id,
+    });
   }
 
   async signup(user: Partial<User>) {

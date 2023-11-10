@@ -6,10 +6,10 @@ declare module 'axios' {
 }
 
 const store = useUserStore()
-// console.log('🚀 ~ file: axios.ts ~ line 4 ~ store', store.token);
 
 const instance = axios.create({
-  baseURL: import.meta.env.MODE === 'development' ? '/api' : import.meta.env.VITE_BASE_URL,
+  baseURL:
+    import.meta.env.MODE === 'development' ? '/api/v1' : import.meta.env.VITE_BASE_URL + '/api/v1',
   timeout: 60000
   // transformResponse: (r) => (r?.data ? r.data : r),
 })

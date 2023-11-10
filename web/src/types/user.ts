@@ -1,4 +1,4 @@
-export interface menu {
+export interface Menu {
   id: number
   menuName: string
   icon: string
@@ -7,18 +7,18 @@ export interface menu {
   parentId?: number
   createTime: string
   updateTime: string
-  children: menu[]
+  children: Menu[]
 }
 
-export interface role {
+export interface Role {
   id: number
   roleName: string
   createTime: string
   updateTime: string
-  menus: menu[]
+  menus: Menu[]
 }
 
-export interface user {
+export interface User {
   id: number
   username: string
   password: string
@@ -26,6 +26,12 @@ export interface user {
   openid: string
   createTime: string
   updateTime: string
-  lastLoginTime: string,
-  roles: role[]
+  lastLoginTime: string
+  valid: number
+  roles: Role[]
+}
+
+export interface Login {
+  username: string
+  password: string
 }

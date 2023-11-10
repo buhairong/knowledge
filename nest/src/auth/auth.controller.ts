@@ -9,9 +9,11 @@ export class AuthController {
 
   @Post('/signin')
   async signin(@Body() dto: any) {
+    console.log('signin1');
     const { username, password } = dto;
     const token = await this.authService.signin(username, password);
     return {
+      code: 0,
       access_token: token,
     };
   }

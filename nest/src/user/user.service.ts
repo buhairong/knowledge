@@ -1,4 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  HttpException,
+  Injectable,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/role/role.entity';
 import { In, Repository } from 'typeorm';
@@ -7,6 +12,8 @@ import { User } from './user.entity';
 import { getCurrentTime } from 'src/utils/util';
 import { ERR_MSG_STATUS } from 'src/constants';
 import { conditionUtils } from 'src/utils/db.helper';
+import * as argon2 from 'argon2';
+import { SerializeInterceptor } from 'src/interceptors/serialize/serialize.interceptor';
 
 @Injectable()
 export class UserService {
@@ -86,6 +93,7 @@ export class UserService {
     const time = getCurrentTime();
     user.createTime = time;
     const userTmp = await this.userRepository.create(user);
+    userTmp.password = await argon2.hash(userTmp.password);
 
     // try {
     //   const res = await this.userRepository.save(userTmp);

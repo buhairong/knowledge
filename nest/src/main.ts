@@ -3,6 +3,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './filters/all-exception.filter';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { SerializeInterceptor } from './interceptors/serialize/serialize.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,9 +13,11 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter(httpAdapter));
   app.useGlobalPipes(
     new ValidationPipe({
-      // whitelist: true,
+      // 去除在类上不存在的字段
+      whitelist: true,
     }),
   );
+  // app.useGlobalInterceptors(new SerializeInterceptor());
   await app.listen(3000);
 }
 bootstrap();

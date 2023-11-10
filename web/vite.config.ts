@@ -27,11 +27,10 @@ export default ({ mode }: { mode: any }) => {
       }
     },
     server: {
+      port: 4000,
       proxy: {
         '/api': {
-          target: SERVER_URL,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-          changeOrigin: true
+          target: 'http://localhost:3000'
         }
       }
     }

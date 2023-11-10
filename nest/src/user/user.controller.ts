@@ -11,6 +11,8 @@ import {
   HttpException,
   UnauthorizedException,
   UseGuards,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
@@ -20,6 +22,8 @@ import { CreateUserPipe } from './pipes/create-user/create-user.pipe';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AdminGuard } from 'src/guard/admin.guard';
 import { JwtGuard } from 'src/guard/jwt.guard';
+import { SerializeInterceptor } from '../interceptors/serialize/serialize.interceptor';
+import { Serialize } from 'src/decorator/serialize.decorator';
 
 @Controller('user')
 @UseGuards(JwtGuard)
@@ -38,6 +42,7 @@ export class UserController {
   }
 
   @Post()
+  @Serialize(User)
   addUser(@Body(CreateUserPipe) dto: CreateUserDto): any {
     const user = dto as User;
 

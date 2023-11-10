@@ -1,3 +1,4 @@
+import { Exclude, Expose } from 'class-transformer';
 import { Log } from 'src/log/log.entity';
 import { Role } from 'src/role/role.entity';
 import {
@@ -14,6 +15,7 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
+  @Expose()
   id: number;
 
   @Column({ unique: true })

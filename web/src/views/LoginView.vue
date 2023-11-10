@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import type { user } from '@/types'
+import type { Login } from '@/types'
 import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User as UserIcon, Lock } from '@element-plus/icons-vue'
+import { signin } from '@/api/login'
 
-const form = reactive<user>({
+const form = reactive<Login>({
   username: '',
   password: '',
 })
 const formRef = ref<FormInstance>()
-const rules = reactive<FormRules<user>>({
+const rules = reactive<FormRules<Login>>({
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' }
   ],
@@ -19,11 +20,14 @@ const rules = reactive<FormRules<user>>({
 })
 
 const onSubmit = async () => {
-  await formRef.value.validate((valid) => {
-    if (valid) {
-      console.log('submit!')
-    }
-  })
+  if (formRef.value) {
+    await formRef.value.validate(async (valid) => {
+      if (valid) {
+        const { username, password } = form
+        const res = await signin(username, password)
+      }
+    })
+  }
 }
 </script>
 
@@ -32,7 +36,7 @@ const onSubmit = async () => {
     <el-form :model="form" ref="formRef" :rules="rules">
       <div class="title">请登录</div>
       <el-form-item prop="username">
-        <el-input placeholder="请输入用户名" v-model="form.username" :prefix-icon="User" />
+        <el-input placeholder="请输入用户名" v-model="form.username" :prefix-icon="UserIcon" />
       </el-form-item>
 
       <el-form-item prop="password">
