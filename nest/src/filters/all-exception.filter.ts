@@ -44,8 +44,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof HttpException) {
-      console.log(exception.getResponse());
-      console.log(exception.getStatus());
+      console.log('HttpException');
       let message;
       if (typeof exception.getResponse() === 'string') {
         message = exception.getResponse();
@@ -65,10 +64,12 @@ export class AllExceptionFilter implements ExceptionFilter {
       exception instanceof UnauthorizedException ||
       exception instanceof ForbiddenException
     ) {
+      console.log('UnauthorizedException');
       msg = ERR_MSG_STATUS[401];
     }
 
     if (exception instanceof BadRequestException) {
+      console.log('BadRequestException');
       let message;
       if (typeof exception.getResponse() === 'string') {
         message = exception.getResponse();

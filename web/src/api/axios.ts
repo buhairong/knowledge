@@ -5,8 +5,6 @@ declare module 'axios' {
   export interface AxiosResponse<T = any> extends Promise<T> {}
 }
 
-const store = useUserStore()
-
 const instance = axios.create({
   baseURL:
     import.meta.env.MODE === 'development' ? '/api/v1' : import.meta.env.VITE_BASE_URL + '/api/v1',
@@ -18,6 +16,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    const store = useUserStore()
     if (store.token) {
       config.headers!.Authorization = `Bearer ${store.token}`
     }

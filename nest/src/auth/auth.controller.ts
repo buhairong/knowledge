@@ -9,7 +9,7 @@ export class AuthController {
 
   @Post('/signin')
   async signin(@Body() dto: any) {
-    console.log('signin1');
+    console.log('signin');
     const { username, password } = dto;
     const token = await this.authService.signin(username, password);
     return {
