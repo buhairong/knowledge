@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { Login } from '@/types'
-import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
+import { ref, reactive } from 'vue'
+import { useRouter } from "vue-router";
+import { ElMessage } from 'element-plus'
 import { User as UserIcon, Lock } from '@element-plus/icons-vue'
+import { useUserStore } from "@/store/user";
 import { signin } from '@/api/login'
 
 const form = reactive<Login>({
@@ -19,12 +22,23 @@ const rules = reactive<FormRules<Login>>({
   ],
 })
 
+const router = useRouter()
+const store = useUserStore()
+
 const onSubmit = async () => {
   if (formRef.value) {
     await formRef.value.validate(async (valid) => {
       if (valid) {
         const { username, password } = form
         const res = await signin(username, password)
+        if (res.code === 0) {
+          store.$patch({
+            token: res.access_token,
+          })
+          router.push("/home")
+        } else {
+          ElMessage.error(res.message)
+        }
       }
     })
   }

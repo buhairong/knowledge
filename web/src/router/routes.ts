@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
-import Login from '@/views/LoginView.vue'
+import Login from '@/views/login/LoginView.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -9,5 +9,10 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/home',
+    component: () => import('@/views/home/HomeView.vue'),
+    name: 'home'
   }
 ]
