@@ -33,10 +33,16 @@ export class AuthService {
       );
     }
 
-    return await this.jwt.signAsync({
+    const token = await this.jwt.signAsync({
       username: user.username,
       sub: user.id,
     });
+
+    return {
+      token,
+      id: user.id,
+      nickname: user.nickname,
+    };
   }
 
   async signup(user: Partial<User>) {

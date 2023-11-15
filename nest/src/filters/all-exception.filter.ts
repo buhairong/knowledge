@@ -19,7 +19,7 @@ export class AllExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
-    console.log(exception);
+    console.log('exception123', exception);
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
@@ -44,12 +44,17 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof HttpException) {
-      console.log('HttpException');
+      console.log('HttpException123');
       let message;
       if (typeof exception.getResponse() === 'string') {
         message = exception.getResponse();
       } else if (typeof exception.getResponse() === 'object') {
-        message = (exception.getResponse() as any).message.join(',');
+        const httpExceptionMessage = (exception.getResponse() as any).message;
+        if (typeof httpExceptionMessage === 'string') {
+          message = httpExceptionMessage;
+        } else if (typeof httpExceptionMessage === 'object') {
+          message = httpExceptionMessage.join(',');
+        }
       }
 
       msg = {
@@ -64,7 +69,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       exception instanceof UnauthorizedException ||
       exception instanceof ForbiddenException
     ) {
-      console.log('UnauthorizedException');
+      console.log('UnauthorizedException123');
       msg = ERR_MSG_STATUS[401];
     }
 

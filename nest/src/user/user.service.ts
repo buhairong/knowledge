@@ -73,7 +73,7 @@ export class UserService {
   }
 
   findOne(id: number) {
-    return this.userRepository.findOne({ where: { id } });
+    return this.userRepository.findOne({ where: { id }, relations: ['roles'] });
   }
 
   async create(user: Partial<User>) {
@@ -109,6 +109,16 @@ export class UserService {
   }
 
   update(id: number, user: Partial<User>) {
+    return this.userRepository.update(id, user);
+  }
+
+  async updatePassword(id: number, password: string) {
+    console.log('updatePassword service');
+    const newPassword = await argon2.hash(password);
+    const user: Partial<User> = {
+      id,
+      password: newPassword,
+    };
     return this.userRepository.update(id, user);
   }
 

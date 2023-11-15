@@ -9,12 +9,16 @@ export class AuthController {
 
   @Post('/signin')
   async signin(@Body() dto: any) {
-    console.log('signin');
     const { username, password } = dto;
-    const token = await this.authService.signin(username, password);
+    const res = await this.authService.signin(username, password);
     return {
       code: 0,
-      access_token: token,
+      data: {
+        access_token: res.token,
+        id: res.id,
+        nickname: res.nickname,
+        username,
+      },
     };
   }
 

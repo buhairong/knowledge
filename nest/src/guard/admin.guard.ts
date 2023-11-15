@@ -9,9 +9,7 @@ export class AdminGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    console.log('req', req);
     const user = (await this.userService.find(req.user.username)) as User;
-    console.log(user);
     if (user.roles.filter((o) => o.id === 1).length) {
       return true;
     }

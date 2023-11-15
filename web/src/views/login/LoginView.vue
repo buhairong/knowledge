@@ -32,8 +32,11 @@ const onSubmit = async () => {
         const { username, password } = form
         const res = await signin(username, password)
         if (res.code === 0) {
-          store.$patch({
-            token: res.access_token,
+          store.setUserInfo({
+            token: res.data.access_token,
+            userId: res.data.id,
+            username: res.data.username,
+            nickname: res.data.nickname,
           })
           router.push("/home")
         } else {
@@ -54,7 +57,7 @@ const onSubmit = async () => {
       </el-form-item>
 
       <el-form-item prop="password">
-        <el-input type="password" placeholder="请输入密码" show-password v-model="form.password" :prefix-icon="Lock" />
+        <el-input type="password" placeholder="请输入密码" show-password v-model="form.password" :prefix-icon="Lock" autocomplete="new-password" />
       </el-form-item>
 
       <el-form-item style="margin-bottom: 0;">
