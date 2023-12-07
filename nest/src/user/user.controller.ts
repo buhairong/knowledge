@@ -31,6 +31,7 @@ import * as argon2 from 'argon2';
 
 @Controller('user')
 @UseGuards(JwtGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -41,13 +42,27 @@ export class UserController {
 
   @Get()
   @UseGuards(AdminGuard)
-  getUsers(@Query() query: getUserDto): any {
-    return this.userService.findAll(query);
+  async getUsers(@Query() query: getUserDto): Promise<any> {
+    const res = await this.userService.findAll(query);
+    console.log('getUsers', res);
+    if (res) {
+      return {
+        code: 0,
+        message: '查询成功',
+        data: res,
+      };
+    } else {
+      throw new HttpException(
+        ERR_MSG_STATUS[1104].msg,
+        ERR_MSG_STATUS[1104].code,
+      );
+    }
   }
 
   @Post()
   @Serialize(User)
   addUser(@Body(CreateUserPipe) dto: CreateUserDto): any {
+    console.log('addUser', dto);
     const user = dto as User;
 
     return this.userService.create(user);
@@ -59,7 +74,6 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Req() req,
   ): Promise<any> {
-    console.log('update_password');
     // 权限1：判断用户是否是自己
     // 权限2：判断用户是否有更新user的权限
     let isAdmin = false;
@@ -94,7 +108,7 @@ export class UserController {
       }
 
       const res = await this.userService.updatePassword(id, dto.newPassword);
-      console.log('res', res);
+
       if (res.affected && res.affected === 1) {
         return {
           code: 0,
@@ -127,7 +141,35 @@ export class UserController {
   }
 
   @Delete('/:id')
-  removeUser(@Param() id: number): any {
-    return this.userService.remove(id);
+  async removeUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req,
+  ): Promise<any> {
+    let isAdmin = false;
+    const adminUser = (await this.userService.findOne(
+      req.user?.userId,
+    )) as User;
+
+    if (adminUser.roles.filter((o) => o.id === 1).length) {
+      isAdmin = true;
+    }
+
+    if (isAdmin) {
+      const res = await this.userService.remove(id);
+
+      if (res) {
+        return {
+          code: 0,
+          message: '用户删除成功',
+        };
+      } else {
+        throw new HttpException(
+          ERR_MSG_STATUS[1105].msg,
+          ERR_MSG_STATUS[1105].code,
+        );
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

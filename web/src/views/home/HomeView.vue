@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import Header from './components/Header.vue'
+import AsideBar from './components/AsideBar.vue'
 </script>
 
 <template>
   <div class="common-layout">
-    <el-container class="is-vertical">
+    <el-container class="is-vertical out-container">
       <Header />
       <el-container>
-        <el-aside width="200px">Aside</el-aside>
-        <el-main>Main</el-main>
+        <AsideBar />
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <style lang="scss" scoped>
-
+.el-main {
+  background-color: #e9eef3;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+}
 </style>

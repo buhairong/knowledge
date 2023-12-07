@@ -14,7 +14,7 @@ const router = useRouter()
 const store = useUserStore()
 const userInfo = ref(store.userInfo)
 
-let timer: number | null = null
+let timer: NodeJS.Timeout | null = null
 const showUserCenter = ref(false)
 
 const openUserCenter = () => {
@@ -74,6 +74,11 @@ const changePsd = async () => {
   }
 }
 
+const showThemeDialog = ref(false)
+const openThemeDialog = () => {
+  showThemeDialog.value = true
+}
+
 const quitloging = () => {
   store.logout()
   router.replace("/login")
@@ -99,6 +104,7 @@ const quitloging = () => {
             超级管理员
           </div>
           <div class="line"></div>
+          <!-- <div class="link-btn" @click="openThemeDialog">编辑主题</div> -->
           <div class="link-btn" @click="openChangePsdDialog">修改密码</div>
           <div class="link-btn" @click="quitloging()">退出登录</div>
         </div>
@@ -107,6 +113,23 @@ const quitloging = () => {
   </el-header>
 
   <el-dialog v-model="showChangePsdDialog" title="修改密码">
+    <el-form :model="changePsdForm" ref="formRef" :rules="rules">
+      <el-form-item prop="oldPassWord">
+        <el-input type="password" placeholder="请输入原密码" show-password v-model="changePsdForm.oldPassWord" :prefix-icon="Lock" autocomplete="new-password" />
+      </el-form-item>
+      <el-form-item prop="newPassWord">
+        <el-input type="password" placeholder="请输入新密码" show-password v-model="changePsdForm.newPassWord" :prefix-icon="Lock" autocomplete="new-password" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="closeChangePsdDialog">取消</el-button>
+        <el-button type="primary" @click="changePsd">确认修改</el-button>
+      </span>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="showThemeDialog" title="修改主题色">
     <el-form :model="changePsdForm" ref="formRef" :rules="rules">
       <el-form-item prop="oldPassWord">
         <el-input type="password" placeholder="请输入原密码" show-password v-model="changePsdForm.oldPassWord" :prefix-icon="Lock" autocomplete="new-password" />
@@ -160,7 +183,6 @@ const quitloging = () => {
         right: -30px;
         z-index: 100;
         width: 300px;
-        height: 190px;
         border-radius: 4px;
         background: #FFFFFF;
         border: 1px solid #E5E6EB;

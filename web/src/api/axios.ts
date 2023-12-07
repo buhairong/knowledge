@@ -19,7 +19,6 @@ instance.interceptors.request.use(
     const store = useUserStore()
     if (store.userInfo && store.userInfo.token) {
       config.headers!.Authorization = `Bearer ${store.userInfo.token}`
-      console.log('store.userInfo.token', store.userInfo.token)
     }
     return config
   },

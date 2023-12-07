@@ -10,3 +10,22 @@ body {
   font-size: 16px;
   color: #333;
 }
+
+.page-wrap {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.pagination-wrap {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-btn-wrap {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -22,7 +22,7 @@ export class UserService {
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
 
-  findAll(query: getUserDto) {
+  async findAll(query: getUserDto) {
     const { page, limit, username, role } = query;
     const take = limit || 100;
     const skip = ((page || 1) - 1) * take;
@@ -61,8 +61,15 @@ export class UserService {
     };
 
     const newQuery = conditionUtils(queryBuilder, obj);
+    newQuery.andWhere('user.id != :id', { id: 1 });
+    newQuery.orderBy('user.createTime', 'DESC');
+    const total = await newQuery.getCount();
+    const records = await newQuery.take(take).skip(skip).getMany();
 
-    return newQuery.take(take).skip(skip).getMany();
+    return {
+      total,
+      records,
+    };
   }
 
   find(username: string) {
@@ -77,6 +84,7 @@ export class UserService {
   }
 
   async create(user: Partial<User>) {
+    console.log('create', user);
     if (!user.roles) {
       const role = await this.roleRepository.findOne({ where: { id: 2 } });
       user.roles = [role];

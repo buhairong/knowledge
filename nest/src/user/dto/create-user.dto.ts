@@ -16,5 +16,9 @@ export class CreateUserDto {
   })
   password: string;
 
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
+
   roles?: Role[] | number[];
 }

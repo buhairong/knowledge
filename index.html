@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #div {
+      width:100px;
+      height:100px;
+      background-color: red;
+      transition: transform .3s;
+    }
+  </style>
+</head>
+<body>
+  <div id="div">abc</div>
+
+  <script>
+    const el = document.getElementById('div')
+    let move = 0
+    let count = 10
+    let timer = setInterval(() => {
+      if (count > 10) {
+        clearInterval(timer)
+      }
+      move += 5
+      el.style.transform = `translateX(${move}px)`
+    }, 500)
+  </script>
+</body>
+</html>
